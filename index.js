@@ -68,7 +68,10 @@ bot.on('raw', async (packet) => {
 
   channel.fetchMessage(packet.d.message_id).then((message) => {
     const emoji = packet.d.emoji.id ? `${packet.d.emoji.name}:${packet.d.emoji.id}` : packet.d.emoji.name;
-    const reaction = message.reactions.get(emoji);
+    const reaction = message.reactions.get(emoji) || {
+      message,
+      emoji: { id: packet.d.emoji.id },
+    };
 
     if (packet.t === 'MESSAGE_REACTION_ADD') {
       bot.emit('messageReactionAdd', reaction, bot.users.get(packet.d.user_id));

@@ -36,6 +36,8 @@ module.exports = async (reaction, user, bot) => {
       role_id: role.id,
       emoji_id: reaction.emoji.id,
     });
+
+    await member.send('Role assigné');
   };
 
   // sent before we start listening to avoid emitting the message
