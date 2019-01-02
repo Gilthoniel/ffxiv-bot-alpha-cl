@@ -2,3 +2,4 @@
 auth.json
 **/db.sqlite
 nohup.out
+running_pid
