@@ -16,7 +16,12 @@ bot.on('message', async (message) => {
   if (message.content === '!alpha-roles') {
     const msg = await message.channel.send('Click on the emoji to subscribe to channels');
 
-    await db(TABLE_ROLE_MESSAGE).insert({ id: msg.id });
+    try {
+      await db(TABLE_ROLE_MESSAGE).insert({ id: msg.id });
+    } catch (e) {
+      logger.error(`Failed to save the message reference: ${e.message}`);
+      logger.error(e.stack);
+    }
   }
 });
 
@@ -36,21 +41,31 @@ async function isRoleMessage(reaction) {
 
 bot.on('messageReactionAdd', async (r, user) => {
   const { message } = r;
-  const e = await isRoleMessage(r);
+  try {
+    const e = await isRoleMessage(r);
 
-  if (!e) {
-    await initRole(r, user, bot);
-    return;
+    if (!e) {
+      await initRole(r, user, bot);
+      return;
+    }
+
+    await addRole(e, user, message);
+  } catch (e) {
+    logger.error(`Error in messageReactionAdd: ${e.message}`);
+    logger.error(e.stack);
   }
-
-  await addRole(e, user, message);
 });
 
 bot.on('messageReactionRemove', async (r, user) => {
-  const e = await isRoleMessage(r);
+  try {
+    const e = await isRoleMessage(r);
 
-  if (e) {
-    await removeRole(e, user, r);
+    if (e) {
+      await removeRole(e, user, r);
+    }
+  } catch (e) {
+    logger.error(`error in messageReactionRemove: ${e.message}`);
+    logger.error(e.stack);
   }
 });
 
