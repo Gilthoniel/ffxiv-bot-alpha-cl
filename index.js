@@ -44,12 +44,15 @@ bot.on('messageReactionAdd', async (r, user) => {
   try {
     const e = await isRoleMessage(r);
 
-    if (!e) {
+    // null meaning the message is registered but the emoji is not initialized
+    if (e == null) {
       await initRole(r, user, bot);
       return;
     }
 
-    await addRole(e, user, message);
+    if (e) {
+      await addRole(e, user, message);
+    }
   } catch (e) {
     logger.error(`Error in messageReactionAdd: ${e.message}`);
     logger.error(e.stack);
