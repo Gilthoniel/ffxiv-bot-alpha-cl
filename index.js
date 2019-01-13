@@ -100,6 +100,9 @@ bot.on('raw', async (packet) => {
   });
 });
 
-bot.on('error', e => logger.error(e.stack));
+bot.on('error', (e) => {
+  logger.error(`Discord error: ${e.message}`);
+  logger.error(e.stack);
+});
 
 bot.login(auth.token);
