@@ -4,12 +4,31 @@ const auth = require('./auth.json');
 const { db, TABLE_ROLE_MESSAGE, TABLE_ROLE_EMOJI } = require('./db/db');
 const initRole = require('./commands/init-role');
 const { addRole, removeRole } = require('./commands/update-user-role');
+const { startTreasureHunt, askTreasureHunt } = require('./commands/treasure-hunt');
 
 const bot = new Discord.Client();
 
 bot.on('ready', () => {
   logger.info('Connected');
   logger.info(`Logged in as: ${bot.user.tag}`);
+});
+
+bot.on('message', async (message) => {
+  try {
+    await startTreasureHunt(message);
+  } catch (e) {
+    logger.error('Failed to process the message');
+    logger.error(e.stack);
+  }
+});
+
+bot.on('message', async (message) => {
+  try {
+    await askTreasureHunt(message);
+  } catch (e) {
+    logger.error('Failed to process the message');
+    logger.error(e.stack);
+  }
 });
 
 bot.on('message', async (message) => {
