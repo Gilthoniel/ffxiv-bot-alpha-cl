@@ -28,7 +28,7 @@ function readDistantFile(url) {
 
 // Look for all the guilds that the author of the message and the bot share. It
 // then returns the member object for each guild matching.
-function findMutualGuilds(message) {
+function findMutualGuilds(message, expectAdmin = false) {
   const { client, author } = message;
 
   const members = client.guilds.reduce((acc, guild) => {
@@ -40,7 +40,7 @@ function findMutualGuilds(message) {
     return acc;
   }, []);
 
-  return members.filter(m => m.hasPermission(Permissions.FLAGS.ADMINISTRATOR));
+  return members.filter(m => !expectAdmin || m.hasPermission(Permissions.FLAGS.ADMINISTRATOR));
 }
 
 exports.startTreasureHunt = async (message) => {
@@ -51,7 +51,7 @@ exports.startTreasureHunt = async (message) => {
     return Promise.resolve();
   }
 
-  const members = findMutualGuilds(message);
+  const members = findMutualGuilds(message, true);
   if (members.length === 0) {
     logger.error('no guild in common with the user');
     return Promise.resolve();
@@ -104,7 +104,7 @@ exports.askTreasureHunt = async (message) => {
     return Promise.resolve();
   }
 
-  const members = findMutualGuilds(message);
+  const members = findMutualGuilds(message, false);
   if (members.length === 0) {
     return Promise.resolve();
   }
