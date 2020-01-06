@@ -118,7 +118,7 @@ exports.askTreasureHunt = async (message) => {
   if (line) {
     message.reply(line.value);
   } else {
-    message.reply('Essayez encore!');
+    message.reply('Vous entendez un bruit sourd mais le coffre reste désespérément fermé...');
   }
 
   return Promise.resolve();
